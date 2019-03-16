@@ -4,7 +4,7 @@ use rand::prelude::*;
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
-#[structopt(name = "montecarlo")]
+#[structopt(name = "montecarlo-pi")]
 struct Opt {
     #[structopt(short = "n", long = "num", help = "Plot number")]
     num: usize,

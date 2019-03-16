@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/montecarlo.iml" filepath="$PROJECT_DIR$/montecarlo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/montecarlo-pi.iml" filepath="$PROJECT_DIR$/montecarlo-pi.iml" />
     </modules>
   </component>
 </project>
