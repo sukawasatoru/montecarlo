@@ -6,8 +6,10 @@ edition = "2018"
 
 [dependencies]
 log = "0.4.6"
-env_logger = "0.6.0"
+env_logger = "0.6.1"
 dotenv = "0.13.0"
 failure = "0.1.5"
+futures = "0.1.25"
 rand = "0.6.5"
-structopt = "0.2.14"
+structopt = "0.2.15"
+tokio = "0.1.17"

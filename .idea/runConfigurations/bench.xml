@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="bench" type="BashConfigurationType" factoryName="Bash">
+    <module name="montecarlo-pi" />
+    <option name="INTERPRETER_OPTIONS" value="bash -c" />
+    <option name="INTERPRETER_PATH" value="/usr/bin/env" />
+    <option name="PROJECT_INTERPRETER" value="false" />
+    <option name="WORKING_DIRECTORY" value="" />
+    <option name="PARENT_ENVS" value="true" />
+    <option name="SCRIPT_NAME" value="echo PLOT_NUM=$PLOT_NUM &amp;&amp; time ./target/release/montecarlo-pi serial -n $PLOT_NUM &gt; /dev/null &amp;&amp; time ./target/release/montecarlo-pi parallel -n $PLOT_NUM -j 4 &gt; /dev/null" />
+    <option name="PARAMETERS" value="" />
+    <envs>
+      <env name="RUST_LOG" value="" />
+      <env name="PLOT_NUM" value="500000000" />
+    </envs>
+    <method v="2" />
+  </configuration>
+</component>

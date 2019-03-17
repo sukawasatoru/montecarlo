@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+  <configuration default="false" name="run serial" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
     <option name="channel" value="DEFAULT" />
-    <option name="command" value="run -- -n 1000" />
+    <option name="command" value="run -- serial -n 1000000" />
     <option name="allFeatures" value="false" />
     <option name="nocapture" value="false" />
     <option name="backtrace" value="SHORT" />
