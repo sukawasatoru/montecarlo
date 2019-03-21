@@ -15,6 +15,7 @@ struct ParallelCalculator {
     executor: TaskExecutor,
     plot_num: usize,
     thread_num: usize,
+    window_size: usize,
     invoked: bool,
     tx: Sender<Vec<f64>>,
     rx: Receiver<Vec<f64>>,
@@ -22,12 +23,14 @@ struct ParallelCalculator {
 }
 
 impl ParallelCalculator {
-    fn new(executor: TaskExecutor, plot_num: usize, thread_num: usize) -> ParallelCalculator {
+    fn new(executor: TaskExecutor, plot_num: usize, thread_num: usize, window_size: usize)
+           -> ParallelCalculator {
         let (tx, rx) = mpsc::channel();
         ParallelCalculator {
             executor,
             plot_num,
             thread_num,
+            window_size,
             invoked: false,
             tx,
             rx,
@@ -61,10 +64,23 @@ impl Future for ParallelCalculator {
             }
         } else {
             self.invoked = true;
-            let num = self.plot_num / self.thread_num;
-            let m = self.plot_num % self.thread_num;
-            for i in 0..self.thread_num {
-                let n = if i == self.thread_num - 1 {
+            let (fut_num, num, m) = if self.window_size == 0 {
+                // auto window size.
+                (self.thread_num,
+                 self.plot_num / self.thread_num,
+                 self.plot_num % self.thread_num)
+            } else {
+                if self.plot_num < self.window_size {
+                    // serial.
+                    (1, self.plot_num, 0)
+                } else {
+                    (self.plot_num / self.window_size,
+                     self.window_size,
+                     self.plot_num % self.window_size)
+                }
+            };
+            for i in 0..fut_num {
+                let n = if i == fut_num - 1 {
                     num + m
                 } else {
                     num
@@ -124,12 +140,12 @@ impl Future for Calculate {
     }
 }
 
-pub fn parallel(num: usize, thread: usize) -> Fallible<()> {
+pub fn parallel(num: usize, thread: usize, window: usize) -> Fallible<()> {
     debug!("parallel");
     let mut runtime = runtime::Builder::new()
         .core_threads(thread)
         .build()? as Runtime;
-    runtime.spawn(ParallelCalculator::new(runtime.executor(), num, thread));
+    runtime.spawn(ParallelCalculator::new(runtime.executor(), num, thread, window));
     runtime.shutdown_on_idle()
         .wait()
         .or_else(|_| Err(format_err!("Runtime Error")))

@@ -1,5 +1,6 @@
-PLOT_NUM = 1000
-JOBS = 4
+PLOT_NUM = 500000000
+JOBS = 0
+WINDOW_SIZE = 10000000
 RELEASE_EXE = ./target/release/montecarlo-pi
 
 ifeq ($(OS),Windows_NT)
@@ -16,4 +17,4 @@ release:
 
 .PHONY: bench
 bench: release
-	time $(RELEASE_EXE) serial -n $(PLOT_NUM) && time $(RELEASE_EXE) parallel -n $(PLOT_NUM) -j $(JOBS)
+	time $(RELEASE_EXE) serial -n $(PLOT_NUM) && time $(RELEASE_EXE) parallel -n $(PLOT_NUM) -j $(JOBS) -w $(WINDOW_SIZE)

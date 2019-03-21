@@ -29,10 +29,18 @@ enum Command {
         #[structopt(
         short = "j",
         long = "jobs",
-        default_value = "1",
+        default_value = "0",
         help = "Number of jobs to run simultaneously"
         )]
         thread: usize,
+
+        #[structopt(
+        short = "w",
+        long = "window",
+        default_value = "0",
+        help = "Window size"
+        )]
+        window: usize,
     },
 }
 
@@ -46,7 +54,14 @@ fn main() -> Fallible<()> {
 
     match opt.cmd {
         Command::Serial { num } => serial(num)?,
-        Command::Parallel { num, thread } => parallel(num, thread)?,
+        Command::Parallel { num, thread, window } =>{
+            let thread = if thread == 0 {
+                num_cpus::get().max(1)
+            } else {
+                thread
+            };
+             parallel(num, thread, window)?
+        },
     }
 
     info!("Bye");
