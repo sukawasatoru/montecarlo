@@ -7,7 +7,7 @@ edition = "2018"
 [dependencies]
 log = "0.4.6"
 env_logger = "0.6.1"
-dotenv = "0.13.0"
+dotenv = "0.14.1"
 failure = "0.1.5"
 futures = "0.1.25"
 num_cpus = "1.10.0"
