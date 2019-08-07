@@ -10,9 +10,6 @@ jobs:
     steps:
       - checkout: self
         fetchDepth: 1
-      - task: NodeTool@0
-        inputs:
-          versionSpec: '12.x'
       - script: make -j"$(cat /proc/cpuinfo | grep -e '^processor' | wc -l)"
         displayName: Build
   - job:
@@ -22,9 +19,6 @@ jobs:
     steps:
       - checkout: self
         fetchDepth: 1
-      - task: NodeTool@0
-        inputs:
-          versionSpec: '12.x'
       - script: make
         displayName: Build
   - job:
@@ -34,8 +28,9 @@ jobs:
     steps:
       - checkout: self
         fetchDepth: 1
-      - task: NodeTool@0
-        inputs:
-          versionSpec: '12.x'
+      - script: |
+          curl -sSf https://sh.rustup.rs | bash -s -- -v -y --no-modify-path
+          echo "##vso[task.prependpath]$(CARGO_HOME)/bin"
+        displayName: Setup Rust
       - script: make -j"$(sysctl hw.logicalcpu | cut -d' ' -f2)"
         displayName: Build
