@@ -25,6 +25,9 @@ jobs:
     displayName: macOS
     pool:
       vmImage: 'macOS-latest'
+    variables:
+      RUSTUP_HOME: $(Pipeline.Workspace)/.rustup
+      CARGO_HOME: $(Pipeline.Workspace)/.cargo
     steps:
       - checkout: self
         fetchDepth: 1
