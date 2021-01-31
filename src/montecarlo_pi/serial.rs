@@ -1,5 +1,5 @@
-use log::debug;
 use rand::prelude::*;
+use tracing::debug;
 
 use super::prelude::*;
 

@@ -1,7 +1,7 @@
 use crate::montecarlo_pi::prelude::*;
 use futures::prelude::*;
-use log::debug;
 use rand::prelude::*;
+use tracing::{debug, Instrument};
 
 pub async fn parallel(num: usize, thread: usize, window: usize) -> Fallible<()> {
     debug!("parallel");
@@ -23,10 +23,8 @@ pub async fn parallel(num: usize, thread: usize, window: usize) -> Fallible<()> 
         }
     };
 
-    let mut futs = futures::stream::FuturesUnordered::new();
+    let futs = futures::stream::FuturesUnordered::new();
     for (i, num_sub) in fut_num.into_iter().enumerate() {
-        let tag = format!("calc-{}", i);
-
         let fut = async move {
             let mut gen = rand::thread_rng();
             let mut result = Vec::with_capacity(num_sub);
@@ -35,24 +33,25 @@ pub async fn parallel(num: usize, thread: usize, window: usize) -> Fallible<()> 
                 let point = Point::new(gen.gen_range(0.0..=1.0), gen.gen_range(0.0..=1.0));
                 let distance = (point.x.powi(2) + point.y.powi(2)).sqrt();
                 debug!(
-                    "{} {}, distance: {:.3}",
-                    tag,
-                    point.flatten_short(),
-                    distance
+                    point = %point.flatten_short(),
+                    distance = %format!("{:.3}", distance)
                 );
                 result.push(distance);
             }
 
             result
-        };
+        }
+        .instrument(tracing::info_span!("fut", %i));
 
         futs.push(fut);
     }
 
-    let mut fut_results = Vec::with_capacity(num);
-    while let Some(mut val) = futs.next().await {
-        fut_results.append(&mut val);
-    }
+    let fut_results = futs
+        .fold(Vec::with_capacity(num), |mut acc, mut data| async move {
+            acc.append(&mut data);
+            acc
+        })
+        .await;
 
     println!("{:.5}", calculate_pi(&fut_results));
 

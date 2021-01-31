@@ -1,11 +1,7 @@
-use log::info;
 use structopt::StructOpt;
+use tracing::info;
 
-use montecarlo_pi::montecarlo_pi::{
-    parallel::parallel,
-    prelude::*,
-    serial::serial,
-};
+use montecarlo_pi::montecarlo_pi::{parallel::parallel, prelude::*, serial::serial};
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "montecarlo-pi")]
@@ -27,18 +23,18 @@ enum Command {
         num: usize,
 
         #[structopt(
-        short = "j",
-        long = "jobs",
-        default_value = "0",
-        help = "Number of jobs to run simultaneously"
+            short = "j",
+            long = "jobs",
+            default_value = "0",
+            help = "Number of jobs to run simultaneously"
         )]
         thread: usize,
 
         #[structopt(
-        short = "w",
-        long = "window",
-        default_value = "0",
-        help = "Window size"
+            short = "w",
+            long = "window",
+            default_value = "0",
+            help = "Window size"
         )]
         window: usize,
     },
@@ -47,7 +43,7 @@ enum Command {
 #[tokio::main]
 async fn main() -> Fallible<()> {
     dotenv::dotenv().ok();
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
     info!("Hello");
 
@@ -55,14 +51,18 @@ async fn main() -> Fallible<()> {
 
     match opt.cmd {
         Command::Serial { num } => serial(num)?,
-        Command::Parallel { num, thread, window } =>{
+        Command::Parallel {
+            num,
+            thread,
+            window,
+        } => {
             let thread = if thread == 0 {
                 num_cpus::get().max(1)
             } else {
                 thread
             };
-             parallel(num, thread, window).await?
-        },
+            parallel(num, thread, window).await?
+        }
     }
 
     info!("Bye");
