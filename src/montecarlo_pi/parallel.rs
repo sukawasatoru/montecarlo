@@ -25,30 +25,32 @@ pub async fn parallel(num: usize, thread: usize, window: usize) -> Fallible<()> 
 
     let futs = futures::stream::FuturesUnordered::new();
     for (i, num_sub) in fut_num.into_iter().enumerate() {
-        let fut = async move {
-            let mut gen = rand::thread_rng();
-            let mut result = Vec::with_capacity(num_sub);
+        let fut = tokio::task::spawn(
+            async move {
+                let mut gen = rand::thread_rng();
+                let mut result = Vec::with_capacity(num_sub);
 
-            for _ in 0..num_sub {
-                let point = Point::new(gen.gen_range(0.0..=1.0), gen.gen_range(0.0..=1.0));
-                let distance = (point.x.powi(2) + point.y.powi(2)).sqrt();
-                debug!(
-                    point = %point.flatten_short(),
-                    distance = %format!("{:.3}", distance)
-                );
-                result.push(distance);
+                for _ in 0..num_sub {
+                    let point = Point::new(gen.gen_range(0.0..=1.0), gen.gen_range(0.0..=1.0));
+                    let distance = (point.x.powi(2) + point.y.powi(2)).sqrt();
+                    debug!(
+                        point = %point.flatten_short(),
+                        distance = %format!("{:.3}", distance)
+                    );
+                    result.push(distance);
+                }
+
+                result
             }
-
-            result
-        }
-        .instrument(tracing::info_span!("fut", %i));
+            .instrument(tracing::info_span!("fut", %i)),
+        );
 
         futs.push(fut);
     }
 
     let fut_results = futs
-        .fold(Vec::with_capacity(num), |mut acc, mut data| async move {
-            acc.append(&mut data);
+        .fold(Vec::with_capacity(num), |mut acc, data| async move {
+            acc.append(&mut data.unwrap());
             acc
         })
         .await;
