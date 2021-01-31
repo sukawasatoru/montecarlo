@@ -1,4 +1,4 @@
-pub use failure::Fallible;
+pub use anyhow::Result as Fallible;
 
 pub struct Point {
     pub x: f64,

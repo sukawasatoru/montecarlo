@@ -44,7 +44,8 @@ enum Command {
     },
 }
 
-fn main() -> Fallible<()> {
+#[tokio::main]
+async fn main() -> Fallible<()> {
     dotenv::dotenv().ok();
     env_logger::init();
 
@@ -60,7 +61,7 @@ fn main() -> Fallible<()> {
             } else {
                 thread
             };
-             parallel(num, thread, window)?
+             parallel(num, thread, window).await?
         },
     }
 

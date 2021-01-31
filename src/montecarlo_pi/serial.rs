@@ -13,7 +13,7 @@ impl PointGenerator {
     }
 
     fn generate(&mut self) -> Point {
-        Point::new(self.rnd.gen_range(0.0, 1.0), self.rnd.gen_range(0.0, 1.0))
+        Point::new(self.rnd.gen_range(0.0..=1.0), self.rnd.gen_range(0.0..=1.0))
     }
 }
 

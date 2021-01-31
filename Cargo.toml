@@ -5,12 +5,15 @@ authors = ["Satoru Sukawa <sukawasatoru.github@outlook.jp>"]
 edition = "2018"
 
 [dependencies]
-log = "0.4.6"
-env_logger = "0.6.1"
-dotenv = "0.14.1"
-failure = "0.1.5"
-futures = "0.1.25"
-num_cpus = "1.10.0"
-rand = "0.7.0"
-structopt = "0.3.0"
-tokio = "0.1.17"
+anyhow = "=1.0.38"
+log = "=0.4.14"
+env_logger = "=0.8.2"
+dotenv = "=0.15.0"
+futures = "=0.3.12"
+num_cpus = "=1.13.0"
+rand = "=0.8.3"
+structopt = "=0.3.21"
+
+[dependencies.tokio]
+version = "=1.1.1"
+features = ["macros", "rt-multi-thread", "sync"]
