@@ -38,8 +38,7 @@ enum Command {
     },
 }
 
-#[tokio::main]
-async fn main() -> Fallible<()> {
+fn main() -> Fallible<()> {
     dotenv::dotenv().ok();
     tracing_subscriber::fmt::init();
 
@@ -54,10 +53,15 @@ async fn main() -> Fallible<()> {
             thread,
             window,
         } => {
-            let thread = thread
-                .map(|data| data as usize)
-                .unwrap_or_else(|| num_cpus::get());
-            parallel(num, thread, window).await?
+            tokio::runtime::Builder::new_multi_thread()
+                .enable_all()
+                .worker_threads(
+                    thread
+                        .map(|data| data as usize)
+                        .unwrap_or_else(num_cpus::get),
+                )
+                .build()?
+                .block_on(async { parallel(num, window).await })?;
         }
     }
 

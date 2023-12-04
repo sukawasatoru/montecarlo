@@ -2,12 +2,12 @@ use crate::prelude::*;
 use futures::prelude::*;
 use rand::prelude::*;
 
-pub async fn parallel(num: usize, thread: usize, window: usize) -> Fallible<()> {
+pub async fn parallel(num: usize, window: usize) -> Fallible<()> {
     debug!("parallel");
 
     let fut_num = if window == 0 {
         // auto window size.
-        calc_window_size(num, thread)
+        calc_window_size(num, num_cpus::get())
     } else {
         calc_window_size(num, window)
     };
