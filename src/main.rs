@@ -1,41 +1,35 @@
+use clap::{Parser, Subcommand};
 use montecarlo_pi::montecarlo_pi::parallel::parallel;
 use montecarlo_pi::montecarlo_pi::serial::serial;
 use montecarlo_pi::prelude::*;
-use structopt::StructOpt;
 
-#[derive(StructOpt, Debug)]
+#[derive(Parser)]
 #[structopt(name = "montecarlo-pi")]
 struct Opt {
-    #[structopt(subcommand)]
+    #[command(subcommand)]
     cmd: Command,
 }
 
-#[derive(StructOpt, Debug)]
+#[derive(Subcommand)]
 enum Command {
-    #[structopt(name = "serial")]
+    #[command()]
     Serial {
-        #[structopt(short = "n", long = "num", help = "Plot number")]
+        /// Plot number.
+        #[arg(short, long)]
         num: usize,
     },
-    #[structopt(name = "parallel")]
+    #[command()]
     Parallel {
-        #[structopt(short = "n", long = "num", help = "Plot number")]
+        /// Plot number.
+        #[arg(short, long)]
         num: usize,
 
-        #[structopt(
-            short = "j",
-            long = "jobs",
-            default_value = "0",
-            help = "Number of jobs to run simultaneously"
-        )]
+        /// Number of jobs to run simultaneously.
+        #[arg(short = 'j', long = "jobs", default_value = "0")]
         thread: usize,
 
-        #[structopt(
-            short = "w",
-            long = "window",
-            default_value = "0",
-            help = "Window size"
-        )]
+        /// Window size.
+        #[arg(short, long, default_value = "0")]
         window: usize,
     },
 }
@@ -47,7 +41,7 @@ async fn main() -> Fallible<()> {
 
     info!("Hello");
 
-    let opt = Opt::from_args() as Opt;
+    let opt = Opt::parse();
 
     match opt.cmd {
         Command::Serial { num } => serial(num)?,
@@ -68,4 +62,15 @@ async fn main() -> Fallible<()> {
     info!("Bye");
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use clap::CommandFactory;
+
+    #[test]
+    fn verify_cli() {
+        Opt::command().debug_assert();
+    }
 }
