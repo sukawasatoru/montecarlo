@@ -8,7 +8,7 @@ pub fn serial(num: usize) -> Fallible<()> {
     for _ in 0..num {
         let point = generate_random_point(&mut gen);
         let distance = distance(&point);
-        debug!(
+        trace!(
             point = %point.flatten_short(),
             distance = %format!("{:.3}", distance),
         );

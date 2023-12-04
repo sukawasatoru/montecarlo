@@ -28,10 +28,9 @@ enum Command {
         #[arg(
             short = 'j',
             long = "jobs",
-            default_value = "1",
             value_parser = clap::value_parser!(u16).range(1..),
         )]
-        thread: u16,
+        thread: Option<u16>,
 
         /// Window size.
         #[arg(short, long, default_value = "0")]
@@ -55,11 +54,9 @@ async fn main() -> Fallible<()> {
             thread,
             window,
         } => {
-            let thread = if thread == 0 {
-                num_cpus::get().max(1)
-            } else {
-                thread.into()
-            };
+            let thread = thread
+                .map(|data| data as usize)
+                .unwrap_or_else(|| num_cpus::get());
             parallel(num, thread, window).await?
         }
     }

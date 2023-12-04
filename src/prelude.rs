@@ -1,6 +1,6 @@
 pub use anyhow::Result as Fallible;
 use rand::prelude::*;
-pub use tracing::{debug, info, Instrument};
+pub use tracing::{debug, info, trace, Instrument};
 
 pub struct Point {
     pub x: f64,
