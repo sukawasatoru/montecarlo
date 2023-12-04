@@ -12,15 +12,13 @@ pub async fn parallel(num: usize, thread: usize, window: usize) -> Fallible<()> 
         let mut val = (0..thread - 1).map(|_| a_num).collect::<Vec<_>>();
         val.push(a_num + num % thread);
         val
+    } else if num < window {
+        // serial.
+        vec![num]
     } else {
-        if num < window {
-            // serial.
-            vec![num]
-        } else {
-            let mut val = (0..num / window - 1).map(|_| window).collect::<Vec<_>>();
-            val.push(window + num % window);
-            val
-        }
+        let mut val = (0..num / window - 1).map(|_| window).collect::<Vec<_>>();
+        val.push(window + num % window);
+        val
     };
 
     let futs = futures::stream::FuturesUnordered::new();
