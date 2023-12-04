@@ -25,8 +25,13 @@ enum Command {
         num: usize,
 
         /// Number of jobs to run simultaneously.
-        #[arg(short = 'j', long = "jobs", default_value = "0")]
-        thread: usize,
+        #[arg(
+            short = 'j',
+            long = "jobs",
+            default_value = "1",
+            value_parser = clap::value_parser!(u16).range(1..),
+        )]
+        thread: u16,
 
         /// Window size.
         #[arg(short, long, default_value = "0")]
@@ -53,7 +58,7 @@ async fn main() -> Fallible<()> {
             let thread = if thread == 0 {
                 num_cpus::get().max(1)
             } else {
-                thread
+                thread.into()
             };
             parallel(num, thread, window).await?
         }
