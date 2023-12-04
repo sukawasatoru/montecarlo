@@ -20,19 +20,19 @@ pub async fn parallel(num: usize, thread: usize, window: usize) -> Fallible<()> 
         val
     };
 
-    let futs = futures::stream::FuturesUnordered::new();
+    let futs = stream::FuturesUnordered::new();
     for (i, num_sub) in fut_num.into_iter().enumerate() {
         let fut = tokio::task::spawn(
             async move {
-                let mut gen = rand::thread_rng();
+                let mut gen = thread_rng();
                 let mut result = Vec::with_capacity(num_sub);
 
                 for _ in 0..num_sub {
-                    let point = Point::new(gen.gen_range(0.0..=1.0), gen.gen_range(0.0..=1.0));
-                    let distance = (point.x.powi(2) + point.y.powi(2)).sqrt();
+                    let point = generate_random_point(&mut gen);
+                    let distance = distance(&point);
                     debug!(
                         point = %point.flatten_short(),
-                        distance = %format!("{:.3}", distance)
+                        distance = %format!("{:.3}", distance),
                     );
                     result.push(distance);
                 }
