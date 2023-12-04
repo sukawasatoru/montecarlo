@@ -1,7 +1,6 @@
-use crate::montecarlo_pi::prelude::*;
+use crate::prelude::*;
 use futures::prelude::*;
 use rand::prelude::*;
-use tracing::{debug, Instrument};
 
 pub async fn parallel(num: usize, thread: usize, window: usize) -> Fallible<()> {
     debug!("parallel");

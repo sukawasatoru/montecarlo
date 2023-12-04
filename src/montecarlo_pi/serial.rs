@@ -1,7 +1,5 @@
+use crate::prelude::*;
 use rand::prelude::*;
-use tracing::debug;
-
-use super::prelude::*;
 
 struct PointGenerator {
     rnd: ThreadRng,
@@ -18,7 +16,7 @@ impl PointGenerator {
 }
 
 pub fn serial(num: usize) -> Fallible<()> {
-    let mut generator = PointGenerator::new(rand::thread_rng());
+    let mut generator = PointGenerator::new(thread_rng());
 
     let mut distance_cache = Vec::with_capacity(num);
     for i in 0..num {

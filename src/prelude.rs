@@ -1,4 +1,5 @@
 pub use anyhow::Result as Fallible;
+pub use tracing::{debug, info, Instrument};
 
 pub struct Point {
     pub x: f64,

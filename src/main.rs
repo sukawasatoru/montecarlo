@@ -1,7 +1,7 @@
+use montecarlo_pi::montecarlo_pi::parallel::parallel;
+use montecarlo_pi::montecarlo_pi::serial::serial;
+use montecarlo_pi::prelude::*;
 use structopt::StructOpt;
-use tracing::info;
-
-use montecarlo_pi::montecarlo_pi::{parallel::parallel, prelude::*, serial::serial};
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "montecarlo-pi")]
